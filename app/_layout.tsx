@@ -10,7 +10,7 @@ import { darkTheme, lightTheme } from '@/theme/theme';
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const theme = colorScheme === 'dark' ? darkTheme : lightTheme;
-  const { session, loading, restoreSession } = useAuthStore();
+  const { user, loading, restoreSession } = useAuthStore();
   const segments = useSegments();
 
   useEffect(() => {
@@ -20,9 +20,9 @@ export default function RootLayout() {
   useEffect(() => {
     if (loading) return;
     const inAuthGroup = segments[0] === '(auth)';
-    if (!session && !inAuthGroup) router.replace('/login');
-    if (session && inAuthGroup) router.replace('/dashboard');
-  }, [session, loading, segments]);
+    if (!user && !inAuthGroup) router.replace('/login');
+    if (user && inAuthGroup) router.replace('/dashboard');
+  }, [user, loading, segments]);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
