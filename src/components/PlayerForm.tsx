@@ -1,23 +1,25 @@
 import * as ImagePicker from 'expo-image-picker';
-import { useState } from 'react';
+import { forwardRef, useImperativeHandle, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, HelperText, Menu, Switch, Text, TextInput } from 'react-native-paper';
 
 import { PLAYER_POSITIONS, positionLabel } from '@/constants/positions';
 import { Player } from '@/types/domain';
 import { PlayerInput, playerInputSchema } from '@/validation/player';
-import { PrimaryButton } from './PrimaryButton';
 import { RatingStars } from './RatingStars';
 
-export function PlayerForm({
-  initial,
-  saving,
-  onSubmit
-}: {
-  initial?: Player;
-  saving?: boolean;
-  onSubmit: (input: PlayerInput) => Promise<void> | void;
-}) {
+export type PlayerFormHandle = {
+  submit: () => void;
+};
+
+export const PlayerForm = forwardRef<
+  PlayerFormHandle,
+  {
+    initial?: Player;
+    saving?: boolean;
+    onSubmit: (input: PlayerInput) => Promise<void> | void;
+  }
+>(function PlayerForm({ initial, onSubmit }, ref) {
   const [name, setName] = useState(initial?.name ?? '');
   const [position, setPosition] = useState<Player['position']>(initial?.position ?? 'flexible');
   const [rating, setRating] = useState(initial?.rating ?? 3);
@@ -36,6 +38,8 @@ export function PlayerForm({
     setError(null);
     await onSubmit(parsed.data);
   };
+
+  useImperativeHandle(ref, () => ({ submit }));
 
   const pickPhoto = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -77,12 +81,9 @@ export function PlayerForm({
         {photoUrl ? 'Change profile photo' : 'Choose profile photo'}
       </Button>
       {error ? <HelperText type="error">{error}</HelperText> : null}
-      <PrimaryButton loading={saving} disabled={saving} onPress={submit}>
-        {initial ? 'Save player' : 'Create player'}
-      </PrimaryButton>
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   form: { gap: 14 },

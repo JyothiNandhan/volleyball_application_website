@@ -1,11 +1,12 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 import { Button, Chip, Dialog, IconButton, Portal, Searchbar, SegmentedButtons, Text } from 'react-native-paper';
 
 import { EmptyState } from '@/components/EmptyState';
 import { LoadingView } from '@/components/LoadingView';
 import { PlayerCard } from '@/components/PlayerCard';
-import { PlayerForm } from '@/components/PlayerForm';
+import { PlayerForm, PlayerFormHandle } from '@/components/PlayerForm';
+import { PrimaryButton } from '@/components/PrimaryButton';
 import { Screen } from '@/components/Screen';
 import { StatCard } from '@/components/StatCard';
 import { PLAYER_POSITIONS } from '@/constants/positions';
@@ -27,6 +28,7 @@ export default function PlayersScreen() {
   const [sort, setSort] = useState<SortMode>('name');
   const [editing, setEditing] = useState<Player | undefined>();
   const [formOpen, setFormOpen] = useState(false);
+  const formRef = useRef<PlayerFormHandle>(null);
   const stats = useRosterStats(players);
 
   const filtered = useMemo(() => {
@@ -130,16 +132,20 @@ export default function PlayersScreen() {
           <Dialog.Title>{editing ? 'Edit Player' : 'Create Player'}</Dialog.Title>
           <Dialog.ScrollArea style={styles.dialogScrollArea}>
             <ScrollView contentContainerStyle={styles.dialogScrollContent} keyboardShouldPersistTaps="handled">
-              <PlayerForm initial={editing} saving={saving} onSubmit={save} />
+              <PlayerForm ref={formRef} initial={editing} saving={saving} onSubmit={save} />
             </ScrollView>
           </Dialog.ScrollArea>
-          {editing ? (
-            <Dialog.Actions>
+          <Dialog.Actions>
+            <Button onPress={() => setFormOpen(false)}>Cancel</Button>
+            {editing ? (
               <Button textColor="#B84A3A" onPress={() => removePlayer(editing.id)}>
                 Delete
               </Button>
-            </Dialog.Actions>
-          ) : null}
+            ) : null}
+            <PrimaryButton loading={saving} disabled={saving} onPress={() => formRef.current?.submit()}>
+              {editing ? 'Save player' : 'Create player'}
+            </PrimaryButton>
+          </Dialog.Actions>
         </Dialog>
       </Portal>
     </Screen>
@@ -150,6 +156,6 @@ const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  dialogScrollArea: { maxHeight: 480 },
+  dialogScrollArea: { maxHeight: 420 },
   dialogScrollContent: { paddingVertical: 8 }
 });
