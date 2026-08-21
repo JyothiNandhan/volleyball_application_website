@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "Volleyball Team Manager",
+    "slug": "volleyball-team-manager",
+    "scheme": "volleyballmanager",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.example.volleyballmanager"
+    },
+    "android": {
+      "package": "com.example.volleyballmanager",
+      "adaptiveIcon": {
+        "backgroundColor": "#0E1915"
+      }
+    },
+    "plugins": [
+      "expo-router",
+      "expo-image-picker",
+      "expo-sqlite",
+      "expo-font"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
