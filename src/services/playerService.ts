@@ -41,7 +41,7 @@ export async function fetchPlayers(ownerId: string): Promise<Player[]> {
 export async function createPlayer(ownerId: string, input: PlayerInput): Promise<Player> {
   if (!isSupabaseConfigured) {
     await initSqlite();
-    return sqliteCreatePlayer(ownerId, toInsert(ownerId, input) as any);
+    return sqliteCreatePlayer(ownerId, input);
   }
   requireSupabaseConfig();
   const { data, error } = await supabase
@@ -56,7 +56,7 @@ export async function createPlayer(ownerId: string, input: PlayerInput): Promise
 export async function updatePlayer(id: string, input: PlayerInput): Promise<Player> {
   if (!isSupabaseConfigured) {
     await initSqlite();
-    return sqliteUpdatePlayer(id, toUpdate(input) as any);
+    return sqliteUpdatePlayer(id, input);
   }
   requireSupabaseConfig();
   const { data, error } = await supabase
