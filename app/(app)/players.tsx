@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { Button, Chip, Dialog, IconButton, Portal, Searchbar, SegmentedButtons, Text } from 'react-native-paper';
 
 import { EmptyState } from '@/components/EmptyState';
@@ -128,8 +128,10 @@ export default function PlayersScreen() {
       <Portal>
         <Dialog visible={formOpen} onDismiss={() => setFormOpen(false)} style={{ borderRadius: 8 }}>
           <Dialog.Title>{editing ? 'Edit Player' : 'Create Player'}</Dialog.Title>
-          <Dialog.ScrollArea>
-            <PlayerForm initial={editing} saving={saving} onSubmit={save} />
+          <Dialog.ScrollArea style={styles.dialogScrollArea}>
+            <ScrollView contentContainerStyle={styles.dialogScrollContent} keyboardShouldPersistTaps="handled">
+              <PlayerForm initial={editing} saving={saving} onSubmit={save} />
+            </ScrollView>
           </Dialog.ScrollArea>
           {editing ? (
             <Dialog.Actions>
@@ -147,5 +149,7 @@ export default function PlayersScreen() {
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
-  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 }
+  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  dialogScrollArea: { maxHeight: 480 },
+  dialogScrollContent: { paddingVertical: 8 }
 });
