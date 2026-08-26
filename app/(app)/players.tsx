@@ -47,6 +47,13 @@ export default function PlayersScreen() {
     setEditing(undefined);
   };
 
+  const remove = async () => {
+    if (!editing) return;
+    await removePlayer(editing.id);
+    setFormOpen(false);
+    setEditing(undefined);
+  };
+
   const seedDemo = async () => {
     if (!user) return;
     for (const player of samplePlayers) {
@@ -138,7 +145,7 @@ export default function PlayersScreen() {
           <Dialog.Actions>
             <Button onPress={() => setFormOpen(false)}>Cancel</Button>
             {editing ? (
-              <Button textColor="#B84A3A" onPress={() => removePlayer(editing.id)}>
+              <Button textColor="#B84A3A" onPress={remove}>
                 Delete
               </Button>
             ) : null}
