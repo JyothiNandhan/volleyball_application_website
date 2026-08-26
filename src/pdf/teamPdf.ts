@@ -1,11 +1,23 @@
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
+import { Platform } from 'react-native';
 
 import { positionLabel } from '@/constants/positions';
 import { Team, TeamBalanceMetrics } from '@/types/domain';
 
 export async function generateAndShareTeamsPdf(teams: Team[], metrics: TeamBalanceMetrics) {
   const html = buildTeamsHtml(teams, metrics);
+
+  if (Platform.OS === 'web') {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) throw new Error('Pop-up blocked. Allow pop-ups to export the PDF.');
+    printWindow.document.write(html);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    return '';
+  }
+
   const { uri } = await Print.printToFileAsync({ html, base64: false });
   if (await Sharing.isAvailableAsync()) {
     await Sharing.shareAsync(uri, { mimeType: 'application/pdf', dialogTitle: 'Share team assignments' });

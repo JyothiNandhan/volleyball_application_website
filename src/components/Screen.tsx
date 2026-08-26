@@ -7,7 +7,11 @@ type Props = PropsWithChildren<{ scroll?: boolean }>;
 
 export function Screen({ children, scroll = true }: Props) {
   const theme = useTheme();
-  const content = <View style={styles.content}>{children}</View>;
+  const content = (
+    <View style={styles.contentWrap}>
+      <View style={styles.content}>{children}</View>
+    </View>
+  );
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: theme.colors.background }]}>
       {scroll ? <ScrollView keyboardShouldPersistTaps="handled">{content}</ScrollView> : content}
@@ -17,5 +21,6 @@ export function Screen({ children, scroll = true }: Props) {
 
 const styles = StyleSheet.create({
   safe: { flex: 1 },
-  content: { padding: 20, gap: 16 }
+  contentWrap: { alignItems: 'center' },
+  content: { width: '100%', maxWidth: 720, padding: 20, gap: 16 }
 });
